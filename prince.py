@@ -78,7 +78,7 @@ class Prince:
         idx = 0
         for nibble in data.cut(4):
             ret[idx * 4:(idx + 1) * 4] = nibble
-            if inverse:
+            if not inverse:
                 idx = (idx + 13) % 16
             else:
                 idx = (idx +  5) % 16
@@ -124,16 +124,19 @@ class Prince:
         return data ^ key ^ Prince.RC[11]
 
 
-    def outer(self, data, key):
+    def outer(self, data, key, decrypt = False):
         k0 = key[0:64]
-        k1 = key[64:128]
-        data = k0 ^ data                                # pre-whitening
-        data = self.princecore(data, k1)
-
         k0prime = k0.copy()
         k0prime.ror(1)
         k0prime ^= k0 >> 63
-        
+        if decrypt:
+            tmp = k0
+            k0 = k0prime
+            k0prime = tmp
+        k1 = key[64:128]
+
+        data = k0 ^ data                                # pre-whitening
+        data = self.princecore(data, k1)
         return (data ^ k0prime).hex                     # post-whitening
 
 
@@ -147,4 +150,4 @@ class Prince:
         bitkey = BitArray('0x' + key.encode('hex'))
         bitkey ^= "0x0000000000000000c0ac29b7c97c50dd"  # alpha padded with zero
         bittext = BitArray('0x' + ciphertext.encode('hex'))
-        return self.outer(bittext, bitkey).decode('hex')
+        return self.outer(bittext, bitkey, True).decode('hex')
