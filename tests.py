@@ -11,12 +11,12 @@ def test(ptxt, key, exp):
     if ctxt != exp:
         print "FAILED encryption of {} with key {}. Expected: {}, got: {}".format(ptxt.encode('hex'), key.encode('hex'), exp.encode('hex'), ctxt.encode('hex'))
     else:
-        print "PASSED encryption of {} with key {} yields {}".format(ptxt.encode('hex'), key.encode('hex'), ctxt.encode('hex'))
+        print "PASSED encryption of {} with key {}. Yields:   {}".format(ptxt.encode('hex'), key.encode('hex'), ctxt.encode('hex'))
     dec = cipher.decrypt(ctxt, key)
     if dec != ptxt:
         print "FAILED decryption of {} with key {}. Expected: {}, got: {}".format(ctxt.encode('hex'), key.encode('hex'), ptxt.encode('hex'), dec.encode('hex'))
     else:
-        print "PASSED decryption of {} with key {} yields {}".format(ctxt.encode('hex'), key.encode('hex'), dec.encode('hex'))
+        print "PASSED decryption of {} with key {}. Yields:   {}".format(ctxt.encode('hex'), key.encode('hex'), dec.encode('hex'))
 
 
 if __name__ == "__main__":
@@ -24,14 +24,14 @@ if __name__ == "__main__":
     print "Running test1"
     test("\x00" * 8, "\x00" * 16, "818665aa0d02dfda".decode('hex'))
     
-    print "Running test2"
+    print "\nRunning test2"
     test("\xff" * 8, "\x00" * 16, "604ae6ca03c20ada".decode('hex'))
     
-    print "Running test3"
+    print "\nRunning test3"
     test("\x00" * 8, "\xff" * 8 + "\x00" * 8, "9fb51935fc3df524".decode('hex'))
     
-    print "Running test4"
+    print "\nRunning test4"
     test("\0" * 8, "\x00" * 8 + "\xff" * 8, "78a54cbe737bb7ef".decode('hex'))
 
-    print "Running test5"
+    print "\nRunning test5"
     test("0123456789abcdef".decode('hex'), "\x00" * 8 + "fedcba9876543210".decode('hex'), "ae25ad3ca8fa9ccf".decode('hex'))
