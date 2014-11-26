@@ -10,9 +10,13 @@ def test(ptxt, key, exp):
     ctxt = cipher.encrypt(ptxt, key)
     if ctxt != exp:
         print "FAILED encryption of {} with key {}. Expected: {}, got: {}".format(ptxt.encode('hex'), key.encode('hex'), exp.encode('hex'), ctxt.encode('hex'))
+    else:
+        print "PASSED encryption of {} with key {} yields {}".format(ptxt.encode('hex'), key.encode('hex'), ctxt.encode('hex'))
     dec = cipher.decrypt(ctxt, key)
     if dec != ptxt:
         print "FAILED decryption of {} with key {}. Expected: {}, got: {}".format(ctxt.encode('hex'), key.encode('hex'), ptxt.encode('hex'), dec.encode('hex'))
+    else:
+        print "PASSED decryption of {} with key {} yields {}".format(ctxt.encode('hex'), key.encode('hex'), dec.encode('hex'))
 
 
 if __name__ == "__main__":
