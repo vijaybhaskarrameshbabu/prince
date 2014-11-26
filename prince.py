@@ -106,8 +106,8 @@ class Prince:
     def lastrounds(self, data, key):
         for idx in (6,7,8,9,10):
             data ^= key ^ Prince.RC[idx]
-            data = self.mprime(data)
             data = self.shiftrows(data, inverse = True)
+            data = self.mprime(data)
             data = self.sbox(data, Prince.Sinv)
         return data
 
