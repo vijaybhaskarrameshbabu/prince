@@ -86,11 +86,11 @@ class Prince:
 
 
     def mprime(self, data):
-        ret = BitArray()
-        ret.append(self.m0(data[ 0:16]))
-        ret.append(self.m1(data[16:32]))
-        ret.append(self.m1(data[32:48]))
-        ret.append(self.m0(data[48:64]))
+        ret = BitArray(length = 64)
+        ret[ 0:16] = self.m0(data[ 0:16])
+        ret[16:32] = self.m1(data[16:32])
+        ret[32:48] = self.m1(data[32:48])
+        ret[48:64] = self.m0(data[48:64])
         return ret
 
 
@@ -115,11 +115,11 @@ class Prince:
     def princecore(self, data, key):
         data ^= key ^ Prince.RC[0]
         data = self.firstrounds(data, key)
-        
+
         data = self.sbox(data, Prince.S)
         data = self.mprime(data)
         data = self.sbox(data, Prince.Sinv)
-        
+
         data = self.lastrounds(data, key)
         return data ^ key ^ Prince.RC[11]
 
@@ -129,9 +129,10 @@ class Prince:
         k1 = key[64:128]
         data = k0 ^ data                                # pre-whitening
         data = self.princecore(data, k1)
-        
-        mask = BitArray(uint = (1 << 63) + 1, length = 64)
-        k0prime = (k0 >> 1) ^ (k0 & mask)               # See sec 3.4 Prince paper
+
+        k0prime = k0.copy()
+        k0prime.ror(1)
+        k0prime ^= k0 >> 63
         
         return (data ^ k0prime).hex                     # post-whitening
 
